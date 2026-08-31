@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/auth/session'
+import { uploadFile, deleteFile, listFolder } from '@/lib/storage'
 import type { ProfileFormData, SocialLinksFormData } from './types'
 
 export async function updateProfile(data: Partial<{ [K in keyof (ProfileFormData & SocialLinksFormData)]: string | null }>) {
@@ -48,31 +49,30 @@ export async function updateAvatar(formData: FormData) {
 
   if (!ALLOWED_TYPES[file.type]) return { error: 'Invalid file type. Use JPG, PNG, or GIF.' }
   const ext = ALLOWED_TYPES[file.type]
-  const path = `${profile.id}/avatar.${ext}`
+  const key = `${profile.id}/avatar.${ext}`
+
+  const arrayBuffer = await file.arrayBuffer()
+  const buffer = Buffer.from(arrayBuffer)
+
+  const { publicUrl, error: uploadError } = await uploadFile({
+    bucket: 'avatars',
+    key,
+    fileBuffer: buffer,
+    contentType: file.type,
+  })
+
+  if (uploadError || !publicUrl) return { error: uploadError || 'Upload failed' }
 
   const supabase = await createClient()
-  const { error: uploadError } = await supabase.storage
-    .from('avatars')
-    .upload(path, file, { upsert: true })
-
-  if (uploadError) return { error: uploadError.message }
-
-  const { data: { publicUrl } } = supabase.storage
-    .from('avatars')
-    .getPublicUrl(path)
-
-  // Append a version query param so re-uploads of the same filename bust the browser cache
-  const versionedUrl = `${publicUrl}?v=${Date.now()}`
-
   const { error: updateError } = await supabase
     .from('profiles')
-    .update({ avatar_url: versionedUrl })
+    .update({ avatar_url: publicUrl })
     .eq('id', profile.id)
 
   if (updateError) return { error: updateError.message }
 
   revalidatePath('/dashboard/profile')
-  return { success: true, avatar_url: versionedUrl }
+  return { success: true, avatar_url: publicUrl }
 }
 
 export async function deleteAvatar() {
@@ -81,18 +81,19 @@ export async function deleteAvatar() {
 
   if (!profile.avatar_url) return { success: true }
 
-  const supabase = await createClient()
+  const { files, error: listError } = await listFolder({ bucket: 'avatars', prefix: profile.id })
+  if (listError) return { error: listError }
 
-  // List all files under the user's folder and remove them all.
-  // This handles any extension (jpg/png/gif) without fragile URL parsing.
-  const { data: listed, error: listError } = await supabase.storage.from('avatars').list(profile.id)
-  if (listError) return { error: listError.message }
-  if (listed && listed.length > 0) {
-    const paths = listed.map((f) => `${profile.id}/${f.name}`)
-    const { error: removeError } = await supabase.storage.from('avatars').remove(paths)
-    if (removeError) return { error: removeError.message }
+  if (files && files.length > 0) {
+    for (const filePath of files) {
+      // Remove prefix if returned as relative path
+      const key = filePath.startsWith(`${profile.id}/`) ? filePath : `${profile.id}/${filePath.split('/').pop()}`
+      const { error: removeError } = await deleteFile({ bucket: 'avatars', key })
+      if (removeError) return { error: removeError }
+    }
   }
 
+  const supabase = await createClient()
   const { error } = await supabase
     .from('profiles')
     .update({ avatar_url: null })
