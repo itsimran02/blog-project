@@ -18,13 +18,41 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://versatilescientist.org'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "The Practical Engineer",
-    template: "%s | The Practical Engineer",
+    default: "Versatile Scientist | Research, Mentorship & Opportunities",
+    template: "%s | Versatile Scientist",
   },
   description:
-    "Practical knowledge for engineers who ship. Deep dives, guides, and architecture insights.",
+    "Empowering students, scholars, and researchers worldwide with insights, academic guidance, and research opportunities.",
+  keywords: ["STEM", "Scholarships", "Research", "Academic Guidance", "Mentorship", "Science Blog"],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Versatile Scientist",
+    title: "Versatile Scientist | Research, Mentorship & Opportunities",
+    description: "Empowering students, scholars, and researchers worldwide.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Versatile Scientist",
+    description: "Empowering students, scholars, and researchers worldwide.",
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
