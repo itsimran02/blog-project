@@ -42,12 +42,11 @@ export function Sidebar({ profile }: SidebarProps) {
     { href: '/dashboard/profile', icon: UserCircle, label: 'Profile', show: true, section: 'main' as const },
     { href: '/dashboard/posts', icon: FileText, label: 'Posts', show: true, section: 'main' as const },
     { href: '/dashboard/posts/new', icon: PlusCircle, label: 'New Post', show: true, section: 'main' as const },
-    { href: '/dashboard/ai-assistant', icon: Bot, label: 'AI Assistant', show: true, section: 'main' as const },
+    { href: '/dashboard/comments', icon: MessageSquare, label: 'Comments', show: can(role, 'posts:create'), section: 'main' as const },
     { href: '/dashboard/developer', icon: Code, label: 'Developer', show: can(role, 'api_keys:write'), section: 'main' as const },
     { href: '/dashboard/admin/users', icon: Users, label: 'Users', show: can(role, 'users:read'), section: 'admin' as const },
     { href: '/dashboard/admin/categories', icon: FolderOpen, label: 'Categories', show: can(role, 'categories:write'), section: 'admin' as const },
     { href: '/dashboard/admin/tags', icon: Tag, label: 'Tags', show: can(role, 'tags:write'), section: 'admin' as const },
-    { href: '/dashboard/comments', icon: MessageSquare, label: 'Comments', show: can(role, 'comments:delete:all'), section: 'admin' as const },
     { href: '/dashboard/admin/newsletter', icon: Mail, label: 'Newsletter', show: can(role, 'users:read'), section: 'admin' as const },
   ]
 

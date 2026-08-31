@@ -27,10 +27,11 @@ export async function createComment(postId: string, content: string, postSlug: s
   if (error) return { error: error.message }
 
   revalidatePath(`/blog/${postSlug}`)
+  revalidatePath('/dashboard/comments')
   return { data }
 }
 
-export async function deleteComment(id: string, postSlug: string) {
+export async function deleteComment(id: string, postSlug?: string) {
   const profile = await getProfile()
   if (!profile) return { error: 'Unauthorized' }
 
@@ -41,8 +42,6 @@ export async function deleteComment(id: string, postSlug: string) {
 
   const supabase = await createClient()
 
-  // For non-admins, scope deletion to own comments only
-  // { count: 'exact' } is required — Supabase returns null for count without it
   let query = supabase.from('comments').delete({ count: 'exact' }).eq('id', id)
   if (!canDeleteAll) {
     query = query.eq('author_id', profile.id)
@@ -53,7 +52,20 @@ export async function deleteComment(id: string, postSlug: string) {
   if (error) return { error: error.message }
   if (!count || count === 0) return { error: 'Unauthorized or comment not found' }
 
-  revalidatePath(`/blog/${postSlug}`)
+  if (postSlug) revalidatePath(`/blog/${postSlug}`)
   revalidatePath('/dashboard/comments')
-  return {}
+  return { success: true }
+}
+
+export async function replyToComment(postId: string, content: string, postSlug?: string) {
+  const profile = await getProfile()
+  if (!profile || !can(profile.role as Role, 'posts:create')) {
+    return { error: 'Unauthorized. Only authors and admins can post official replies.' }
+  }
+
+  const result = await createComment(postId, content, postSlug || '')
+  if (result.error) return { error: result.error }
+
+  revalidatePath('/dashboard/comments')
+  return { success: true, data: result.data }
 }
