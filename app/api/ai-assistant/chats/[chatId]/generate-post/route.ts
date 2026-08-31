@@ -67,11 +67,15 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id')
+    .select('id, role')
     .eq('id', user.id)
     .single()
 
-  if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
+  const { can } = await import('@/lib/permissions')
+
+  if (!profile || !can(profile.role as any, 'posts:create')) {
+    return NextResponse.json({ error: 'Forbidden. Only authors and admins can create posts.' }, { status: 403 })
+  }
 
   const serviceClient = createServiceClient()
   const [tagIds, categoryId, slug] = await Promise.all([

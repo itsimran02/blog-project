@@ -5,8 +5,8 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key',
     {
       cookies: {
         getAll() {
@@ -33,7 +33,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Helper: build a redirect that carries any auth cookie updates from supabaseResponse.
-  // Without this, session-refresh cookies written by getUser() would be lost on redirects.
   function redirectWithCookies(destination: string): NextResponse {
     const url = request.nextUrl.clone()
     url.pathname = destination
@@ -48,7 +47,6 @@ export async function middleware(request: NextRequest) {
   if (pathname === '/mfa') {
     if (!user) return redirectWithCookies('/login')
 
-    // Already completed MFA — send to dashboard
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
     if (aal?.currentLevel === 'aal2') return redirectWithCookies('/dashboard')
 
@@ -60,29 +58,49 @@ export async function middleware(request: NextRequest) {
     if (!user) return redirectWithCookies('/login')
 
     // Enforce MFA for users who have it enrolled.
-    // Fail-closed: if the AAL lookup fails, redirect to /mfa rather than
-    // allowing the request through without MFA verification.
     const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
     if (aalError || (aal?.nextLevel === 'aal2' && aal.currentLevel !== 'aal2')) {
       return redirectWithCookies('/mfa')
     }
 
-    // Protect /dashboard/admin — require admin role
-    if (pathname.startsWith('/dashboard/admin')) {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
 
-      const profile = profileData as { role: string } | null
-      if (profile?.role !== 'admin') return redirectWithCookies('/dashboard')
+    const role = (profileData as { role?: string } | null)?.role
+
+    // Protect /dashboard/admin — require admin role
+    if (pathname.startsWith('/dashboard/admin') && role !== 'admin') {
+      return redirectWithCookies('/dashboard')
+    }
+
+    // Allow /dashboard/profile for updating display profile for comments
+    if (pathname === '/dashboard/profile') {
+      return supabaseResponse
+    }
+
+    // Restrict all other management dashboard routes (/dashboard, /dashboard/posts, etc.)
+    // Regular users (role 'user' or member) are redirected to /blog so they can read and comment
+    if (role !== 'admin' && role !== 'author') {
+      return redirectWithCookies('/blog')
     }
   }
 
   // ── Redirect logged-in users away from auth pages ─────────────────────────
   if (user && (pathname === '/login' || pathname === '/register')) {
-    return redirectWithCookies('/dashboard')
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    const role = (profileData as { role?: string } | null)?.role
+    if (role === 'admin' || role === 'author') {
+      return redirectWithCookies('/dashboard')
+    }
+    return redirectWithCookies('/blog')
   }
 
   return supabaseResponse

@@ -29,6 +29,40 @@ function makeRequest(body: unknown, authHeader?: string): Request {
   })
 }
 
+function setupDefaultServiceMock(userRole: string = 'author', fakePost?: any) {
+  mockCreateServiceClient.mockReturnValue({
+    from: vi.fn().mockImplementation((table: string) => {
+      if (table === 'profiles') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: userRole ? { role: userRole } : null,
+                error: userRole ? null : { message: 'Not found' },
+              }),
+            }),
+          }),
+        }
+      }
+      if (table === 'posts') {
+        return {
+          insert: vi.fn().mockReturnValue({
+            select: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: fakePost || { id: 'post-abc', title: 'Test Post', slug: 'test-post' },
+                error: null,
+              }),
+            }),
+          }),
+        }
+      }
+      return {
+        insert: vi.fn().mockResolvedValue({ error: null }),
+      }
+    }),
+  } as unknown as ReturnType<typeof createServiceClient>)
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
 })
@@ -53,8 +87,22 @@ describe('POST /api/posts/create', () => {
     expect(json.error).toBe('Invalid or revoked API key')
   })
 
+  it('returns 403 when user role is not author or admin', async () => {
+    mockValidateApiKey.mockResolvedValue('user-123')
+    setupDefaultServiceMock('user')
+
+    const req = makeRequest({ title: 'Test', content: '<p>Hi</p>' }, 'Bearer fmblog_valid')
+    const res = await POST(req)
+    expect(res.status).toBe(403)
+    const json = await res.json()
+    expect(json.success).toBe(false)
+    expect(json.error).toContain('Only authors and admins can create posts')
+  })
+
   it('returns 400 when title is missing', async () => {
     mockValidateApiKey.mockResolvedValue('user-123')
+    setupDefaultServiceMock('author')
+
     const req = makeRequest({ content: '<p>Hi</p>' }, 'Bearer fmblog_valid')
     const res = await POST(req)
     expect(res.status).toBe(400)
@@ -65,6 +113,8 @@ describe('POST /api/posts/create', () => {
 
   it('returns 400 when content is missing', async () => {
     mockValidateApiKey.mockResolvedValue('user-123')
+    setupDefaultServiceMock('author')
+
     const req = makeRequest({ title: 'Test' }, 'Bearer fmblog_valid')
     const res = await POST(req)
     expect(res.status).toBe(400)
@@ -73,7 +123,7 @@ describe('POST /api/posts/create', () => {
     expect(json.error).toContain('content')
   })
 
-  it('returns 201 with created post on valid request', async () => {
+  it('returns 201 with created post on valid request for author role', async () => {
     mockValidateApiKey.mockResolvedValue('user-123')
 
     const fakePost = {
@@ -93,20 +143,7 @@ describe('POST /api/posts/create', () => {
       updated_at: '2026-04-07T00:00:00Z',
     }
 
-    mockCreateServiceClient.mockReturnValue({
-      from: vi.fn().mockReturnValue({
-        insert: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: fakePost, error: null }),
-          }),
-        }),
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: null, error: { message: 'Not found' } }),
-          }),
-        }),
-      }),
-    } as unknown as ReturnType<typeof createServiceClient>)
+    setupDefaultServiceMock('author', fakePost)
 
     const req = makeRequest(
       { title: 'Test Post', content: '<p>Hello</p>' },

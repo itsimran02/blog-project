@@ -6,6 +6,7 @@ import {
   generateUniqueSlugForApi,
 } from '@/features/api-keys/apiKeyService'
 import { createServiceClient } from '@/lib/supabase/service'
+import { can, type Role } from '@/lib/permissions'
 
 type PostBody = {
   title: string
@@ -101,6 +102,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'Invalid or revoked API key' }, { status: 401 })
   }
 
+  // 1b. Verify user has author or admin role
+  const supabase = createServiceClient()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single()
+
+  if (!profile || !can(profile.role as Role, 'posts:create')) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden. Only authors and admins can create posts.' },
+      { status: 403 }
+    )
+  }
+
   // 2. Parse and validate body
   let rawBody: Record<string, unknown>
   try {
@@ -116,7 +132,6 @@ export async function POST(request: Request) {
   const body = parsed.body
 
   // 3. Resolve slug and category
-  const supabase = createServiceClient()
   const resolvedSlug = (typeof body.slug === 'string' && body.slug.trim())
     ? body.slug.trim()
     : await generateUniqueSlugForApi(body.title, supabase)
