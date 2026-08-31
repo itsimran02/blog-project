@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Editor } from '@/components/editor/Editor'
 import { SeoAnalyzerPanel } from '@/components/seo/SeoAnalyzerPanel'
+import { MediaLibraryModal } from '@/components/media/MediaLibraryModal'
 import { createPost, updatePost, publishPost, unpublishPost } from '@/features/posts/actions'
 import type { PostWithRelations, Category, Tag as TagType } from '@/features/posts/types'
 
@@ -61,6 +62,7 @@ export function PostEditor({ post, categories, tags }: PostEditorProps) {
   const [saving, setSaving] = useState(false)
   const [publishing, setPublishing] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
+  const [coverMediaModalOpen, setCoverMediaModalOpen] = useState(false)
 
   useEffect(() => {
     function onScroll() {
@@ -340,7 +342,18 @@ export function PostEditor({ post, categories, tags }: PostEditorProps) {
             <SidebarCard icon={Settings2} title="Settings">
               {/* Cover image */}
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Cover Image</Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs text-muted-foreground">Cover Image</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCoverMediaModalOpen(true)}
+                    className="h-6 px-2 text-[11px] text-primary hover:text-primary/90 font-semibold"
+                  >
+                    Select from Media
+                  </Button>
+                </div>
                 {coverImage && (
                   <div className="relative rounded-lg overflow-hidden aspect-video bg-muted mb-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -361,6 +374,15 @@ export function PostEditor({ post, categories, tags }: PostEditorProps) {
                   />
                 </div>
               </div>
+
+              {/* Media Library Modal for Cover Image */}
+              <MediaLibraryModal
+                open={coverMediaModalOpen}
+                onClose={() => setCoverMediaModalOpen(false)}
+                onSelectImage={(url) => setValue('cover_image', url)}
+                title="Select Cover Image"
+                buttonLabel="Set as Cover Image"
+              />
 
               {/* Category */}
               <div className="space-y-2">

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { MediaLibraryModal } from '@/components/media/MediaLibraryModal'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -241,9 +242,10 @@ export function Toolbar({ editor }: ToolbarProps) {
     if (url) editor.chain().focus().setLink({ href: url }).run()
   }
 
-  function addImage() {
-    const url = window.prompt('Enter image URL')
-    if (url) editor.chain().focus().setImage({ src: url }).run()
+  const [mediaModalOpen, setMediaModalOpen] = useState(false)
+
+  function handleInsertImage(url: string, altText: string) {
+    editor.chain().focus().setImage({ src: url, alt: altText }).run()
   }
 
   const activeLineHeight =
@@ -360,10 +362,10 @@ export function Toolbar({ editor }: ToolbarProps) {
       <Button type="button" variant={editor.isActive('link') ? 'secondary' : 'ghost'} size="sm" className="h-8 w-8 p-0" onClick={addLink} title="Link">
         <Link className="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={addImage} title="Image">
+      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setMediaModalOpen(true)} title="Insert Image / Upload from Computer">
         <ImageIcon className="h-4 w-4" />
       </Button>
-<Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal Rule">
+      <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal Rule">
         <Minus className="h-4 w-4" />
       </Button>
 
@@ -372,6 +374,14 @@ export function Toolbar({ editor }: ToolbarProps) {
       {/* Group 7: Line height dropdown */}
       <LineHeightMenu editor={editor} activeLineHeight={activeLineHeight} />
 
+      {/* Media Library Modal for Direct Computer Uploads */}
+      <MediaLibraryModal
+        open={mediaModalOpen}
+        onClose={() => setMediaModalOpen(false)}
+        onSelectImage={handleInsertImage}
+        title="Insert Image into Post"
+        buttonLabel="Insert into Post"
+      />
     </div>
   )
 }
