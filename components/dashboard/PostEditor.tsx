@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Editor } from '@/components/editor/Editor'
+import { SeoAnalyzerPanel } from '@/components/seo/SeoAnalyzerPanel'
 import { createPost, updatePost, publishPost, unpublishPost } from '@/features/posts/actions'
 import type { PostWithRelations, Category, Tag as TagType } from '@/features/posts/types'
 
@@ -416,29 +417,17 @@ export function PostEditor({ post, categories, tags }: PostEditorProps) {
               )}
             </SidebarCard>
 
-            {/* ── SEO card ───────────────────────────────── */}
-            <SidebarCard icon={BarChart3} title="SEO">
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Meta Title</Label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/60" />
-                  <Input
-                    {...register('seo_title')}
-                    placeholder="Overrides post title in search…"
-                    className="pl-9 text-sm h-9 bg-muted/30 border-border/60"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Meta Description</Label>
-                <Textarea
-                  {...register('seo_description')}
-                  placeholder="Concise summary for search results…"
-                  rows={3}
-                  className="resize-none text-sm leading-relaxed bg-muted/30 border-border/60 focus-visible:border-blue-400/60 focus-visible:ring-blue-400/20 placeholder:text-muted-foreground/40"
-                />
-              </div>
-            </SidebarCard>
+            {/* ── Real-Time On-Page SEO Analyzer Panel ─────── */}
+            <SeoAnalyzerPanel
+              title={watch('title')}
+              seoTitle={watch('seo_title')}
+              excerpt={watch('excerpt')}
+              seoDescription={watch('seo_description')}
+              content={watch('content')}
+              slug={watch('slug')}
+              onSeoTitleChange={(val) => setValue('seo_title', val)}
+              onSeoDescriptionChange={(val) => setValue('seo_description', val)}
+            />
           </div>
         </div>
       </form>
