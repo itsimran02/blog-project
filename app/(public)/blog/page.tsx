@@ -6,8 +6,8 @@ import { PostList } from '@/features/posts/components/PostList'
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Articles',
-  description: 'Practical knowledge for engineers who ship.',
+  title: 'Articles | Versatile Scientist',
+  description: 'Scholarship guides, research tips, and academic career insights.',
 }
 
 interface BlogPageProps {
@@ -26,10 +26,10 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     <div className="container max-w-5xl mx-auto py-12 px-4 space-y-10">
       {/* Page header */}
       <div className="space-y-2 border-b pb-8">
-        <p className="text-sm font-medium text-primary uppercase tracking-widest">The Practical Engineer</p>
-        <h1 className="text-4xl font-bold tracking-tight">All Articles</h1>
-        <p className="text-muted-foreground text-base max-w-xl">
-          Practical knowledge for engineers who ship. Deep dives, guides, and architecture insights.
+        <p className="text-sm font-bold text-blue-600 uppercase tracking-widest">Versatile Scientist</p>
+        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">All Articles & Guides</h1>
+        <p className="text-slate-600 text-base max-w-xl">
+          Discover research strategies, scholarship tips, fellowship guides, and career insights.
         </p>
       </div>
 
