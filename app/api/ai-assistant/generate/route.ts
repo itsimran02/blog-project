@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('[POST /api/ai-assistant/generate] LLM error:', message)
-    return apiError('LLM provider returned an error.', 502, message)
+    return apiError('LLM provider returned an error. Check server logs for details.', 502)
   }
 
   // Apply overrides

@@ -22,11 +22,18 @@ export async function GET(_req: NextRequest) {
   }
 
   const rows = (data ?? []) as Pick<NewsletterSubscription, 'email' | 'subscribed_at' | 'unsubscribed_at'>[]
+
+  // Sanitize CSV fields to prevent formula injection (=, +, -, @, \t, \r)
+  const sanitizeCsvField = (value: string) => {
+    const sanitized = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+    return `"${sanitized.replace(/"/g, '""')}"`
+  }
+
   const lines = [
-    'email,subscribed_at,status',
+    '"email","subscribed_at","status"',
     ...rows.map((row) => {
       const status = row.unsubscribed_at ? 'unsubscribed' : 'active'
-      return `${row.email},${row.subscribed_at},${status}`
+      return `${sanitizeCsvField(row.email)},${sanitizeCsvField(row.subscribed_at)},${sanitizeCsvField(status)}`
     }),
   ]
 

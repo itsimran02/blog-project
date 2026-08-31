@@ -11,6 +11,9 @@ export async function GET() {
     .order('published_at', { ascending: false })
     .limit(20)
 
+  // Escape CDATA terminators to prevent XML injection via post content
+  const escapeCdata = (str: string) => str.replace(/]]>/g, ']]]]><![CDATA[>')
+
   const itemsXml = (posts || [])
     .map((post) => {
       const postUrl = `${siteUrl}/blog/${post.slug}`
@@ -19,12 +22,12 @@ export async function GET() {
 
       return `
     <item>
-      <title><![CDATA[${post.title}]]></title>
+      <title><![CDATA[${escapeCdata(post.title)}]]></title>
       <link>${postUrl}</link>
       <guid isPermaLink="true">${postUrl}</guid>
-      <dc:creator><![CDATA[${authorName}]]></dc:creator>
+      <dc:creator><![CDATA[${escapeCdata(authorName)}]]></dc:creator>
       <pubDate>${pubDate}</pubDate>
-      <description><![CDATA[${post.excerpt || ''}]]></description>
+      <description><![CDATA[${escapeCdata(post.excerpt || '')}]]></description>
     </item>`
     })
     .join('')

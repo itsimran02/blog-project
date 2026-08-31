@@ -6,12 +6,21 @@ import { createClient } from '@/lib/supabase/server'
 export async function register(formData: FormData) {
   const supabase = await createClient()
 
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const fullName = formData.get('full_name') as string
+
+  // Server-side password strength validation
+  if (!password || password.length < 8) {
+    return { error: 'Password must be at least 8 characters.' }
+  }
+
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email,
+    password,
     options: {
       data: {
-        full_name: formData.get('full_name') as string,
+        full_name: fullName,
       },
     },
   }

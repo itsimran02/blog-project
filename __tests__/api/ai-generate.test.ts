@@ -162,7 +162,9 @@ describe('POST /api/ai-assistant/generate', () => {
     expect(res.status).toBe(502)
     const json = await res.json()
     expect(json.success).toBe(false)
-    expect(json.details).toContain('Invalid API key')
+    expect(json.error).toContain('LLM provider returned an error')
+    // details are intentionally omitted to avoid leaking internal info
+    expect(json.details).toBeUndefined()
   })
 
   it('applies post_overrides over AI-generated values', async () => {

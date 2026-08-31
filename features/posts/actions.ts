@@ -72,6 +72,11 @@ export async function updatePost(id: string, values: PostFormValues) {
   const profile = await getProfile()
   if (!profile) return { error: 'Unauthorized' }
 
+  // Verify user has update permission
+  if (!can(profile.role as Role, 'posts:update:own') && !can(profile.role as Role, 'posts:update:all')) {
+    return { error: 'Unauthorized' }
+  }
+
   const supabase = await createClient()
 
   // Check ownership for non-admins

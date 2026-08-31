@@ -6,7 +6,7 @@ import { checkRateLimit } from '@/lib/rateLimit'
 const schema = z.object({ email: z.string().email() })
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const ip = (req as any).ip ?? req.headers.get('x-real-ip') ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
   const rl = checkRateLimit(`newsletter:subscribe:${ip}`, 5, 60_000)
   if (!rl.allowed) {
     return NextResponse.json(

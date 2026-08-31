@@ -1,3 +1,5 @@
+import DOMPurify from 'isomorphic-dompurify'
+
 interface TipTapMark {
   type: string
   attrs?: Record<string, string | number | boolean | null>
@@ -152,7 +154,8 @@ export function EditorContent({ content, className }: EditorContentProps) {
     const json: TipTapNode = JSON.parse(content)
     html = renderNode(json)
   } catch {
-    html = content
+    // Fallback: sanitize raw HTML to prevent XSS from legacy/imported content
+    html = DOMPurify.sanitize(content)
   }
 
   return (
