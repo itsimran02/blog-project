@@ -21,6 +21,7 @@ import { TestimonialSlider } from '@/components/landing/TestimonialSlider'
 import { MediaGallery } from '@/components/landing/MediaGallery'
 import { MentorDiscovery } from '@/components/landing/MentorDiscovery'
 import { BookingSection } from '@/components/landing/BookingSection'
+import { LatestPostsSection } from '@/components/landing/LatestPostsSection'
 import { SubscribeForm } from '@/components/newsletter/SubscribeForm'
 
 export default function HomePage() {
@@ -155,6 +156,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 4.5 LATEST ARTICLES & INSIGHTS */}
+      <LatestPostsSection />
 
       {/* 5. MENTOR DISCOVERY */}
       <MentorDiscovery />
