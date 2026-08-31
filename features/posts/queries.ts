@@ -16,15 +16,22 @@ function normalizeTags(raw: PostWithRelations): PostWithRelations {
   }
 }
 
-export async function getPublishedPosts(page = 1, limit = 10) {
+export async function getPublishedPosts(page = 1, limit = 10, search?: string) {
   const supabase = await createClient()
   const from = (page - 1) * limit
   const to = from + limit - 1
 
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('posts')
     .select(POST_SELECT, { count: 'exact' })
     .eq('status', 'published')
+
+  if (search && search.trim()) {
+    const term = `%${search.trim()}%`
+    query = query.or(`title.ilike.${term},excerpt.ilike.${term}`)
+  }
+
+  const { data, error, count } = await query
     .order('published_at', { ascending: false })
     .range(from, to)
 
