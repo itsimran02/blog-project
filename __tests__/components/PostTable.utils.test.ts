@@ -22,8 +22,8 @@ function makePost(overrides: Partial<PostWithRelations> = {}): PostWithRelations
 }
 
 const posts: PostWithRelations[] = [
-  makePost({ id: 'p1', title: 'Alpha Post', status: 'published', updated_at: '2024-03-01T00:00:00Z', author: { id: 'u1', full_name: 'Alice', email: 'alice@example.com', role: 'author', created_at: null, updated_at: null }, category: { id: 'c1', name: 'Tech', slug: 'tech', description: null, created_at: null }, tags: [] }),
-  makePost({ id: 'p2', title: 'Beta Post', status: 'draft', updated_at: '2024-01-15T00:00:00Z', author: { id: 'u2', full_name: 'Bob', email: 'bob@example.com', role: 'author', created_at: null, updated_at: null }, category: { id: 'c2', name: 'News', slug: 'news', description: null, created_at: null }, tags: [] }),
+  makePost({ id: 'p1', title: 'Alpha Post', status: 'published', updated_at: '2024-03-01T00:00:00Z', author: { id: 'u1', full_name: 'Alice', email: 'alice@example.com', role: 'author', created_at: null, updated_at: null } as any, category: { id: 'c1', name: 'Tech', slug: 'tech', description: null, created_at: null } as any, tags: [] }),
+  makePost({ id: 'p2', title: 'Beta Post', status: 'draft', updated_at: '2024-01-15T00:00:00Z', author: { id: 'u2', full_name: 'Bob', email: 'bob@example.com', role: 'author', created_at: null, updated_at: null } as any, category: { id: 'c2', name: 'News', slug: 'news', description: null, created_at: null } as any, tags: [] }),
   makePost({ id: 'p3', title: 'Gamma Post', status: 'draft', updated_at: null, author: null, category: null, tags: [] }),
 ]
 

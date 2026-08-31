@@ -18,7 +18,7 @@ const makeComment = (id: string, content: string): CommentWithAuthor => ({
   is_approved: true,
   created_at: '2024-01-01',
   author: { id: 'u1', full_name: 'Alice', email: 'alice@example.com', role: 'author', created_at: '2024-01-01' },
-})
+} as unknown as CommentWithAuthor)
 
 describe('CommentList', () => {
   it('renders nothing when there are no comments', () => {

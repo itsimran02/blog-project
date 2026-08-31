@@ -96,7 +96,7 @@ export function TestimonialSlider() {
                       <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-foreground italic mb-8 leading-relaxed text-sm lg:text-base">"{t.quote}"</p>
+                  <p className="text-foreground italic mb-8 leading-relaxed text-sm lg:text-base">&quot;{t.quote}&quot;</p>
                 </div>
                 <div className="flex flex-col items-center gap-3 mt-auto">
                   <div className="w-14 h-14 bg-muted rounded-full overflow-hidden shrink-0 border-2 border-border shadow-xs">
