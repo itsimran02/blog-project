@@ -16,7 +16,24 @@ function normalizeTags(raw: PostWithRelations): PostWithRelations {
   }
 }
 
-export async function getPublishedPosts(page = 1, limit = 10, search?: string) {
+export async function getAllCategories() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('categories')
+    .select('id, name, slug')
+    .order('name', { ascending: true })
+
+  if (error) return []
+  return data as { id: string; name: string; slug: string }[]
+}
+
+export async function getPublishedPosts(
+  page = 1,
+  limit = 10,
+  search?: string,
+  categorySlug?: string,
+  sortOrder: 'asc' | 'desc' = 'desc'
+) {
   const supabase = await createClient()
   const from = (page - 1) * limit
   const to = from + limit - 1
@@ -26,13 +43,24 @@ export async function getPublishedPosts(page = 1, limit = 10, search?: string) {
     .select(POST_SELECT, { count: 'exact' })
     .eq('status', 'published')
 
+  if (categorySlug && categorySlug !== 'all') {
+    const { data: cat } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', categorySlug)
+      .single()
+    if (cat) {
+      query = query.eq('category_id', cat.id)
+    }
+  }
+
   if (search && search.trim()) {
     const term = `%${search.trim()}%`
     query = query.or(`title.ilike.${term},excerpt.ilike.${term}`)
   }
 
   const { data, error, count } = await query
-    .order('published_at', { ascending: false })
+    .order('published_at', { ascending: sortOrder === 'asc' })
     .range(from, to)
 
   if (error) throw error
