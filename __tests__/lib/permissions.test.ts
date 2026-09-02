@@ -76,6 +76,17 @@ describe('can', () => {
   it('author can write api keys', () => {
     expect(can('author', 'api_keys:write')).toBe(true)
   })
+
+  it('user role can only delete own comments and cannot create posts or manage CMS', () => {
+    expect(can('user', 'comments:delete:own')).toBe(true)
+    expect(can('user', 'posts:create')).toBe(false)
+    expect(can('user', 'posts:read:all')).toBe(false)
+    expect(can('user', 'posts:delete:own')).toBe(false)
+    expect(can('user', 'users:read')).toBe(false)
+    expect(can('user', 'categories:write')).toBe(false)
+    expect(can('user', 'tags:write')).toBe(false)
+    expect(can('user', 'api_keys:write')).toBe(false)
+  })
 })
 
 describe('canAccess', () => {

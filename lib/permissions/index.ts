@@ -27,6 +27,9 @@ const rolePermissions: Record<Role, Permission[]> = {
     'comments:delete:own',
     'api_keys:write',
   ],
+  user: [
+    'comments:delete:own',
+  ],
 }
 
 export function can(role: Role | null | undefined, permission: Permission): boolean {
