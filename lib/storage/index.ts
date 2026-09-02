@@ -7,7 +7,25 @@ export function resetStorageClient(): void {
   s3ClientInstance = null
 }
 
+export type StorageProvider = 'supabase' | 'cloudflare'
+
+export function getStorageProvider(): StorageProvider {
+  const configuredProvider = process.env.STORAGE_PROVIDER?.toLowerCase()
+  if (configuredProvider === 'cloudflare' && isR2Configured()) {
+    return 'cloudflare'
+  }
+  if (configuredProvider === 'supabase') {
+    return 'supabase'
+  }
+  return isR2Configured() ? 'cloudflare' : 'supabase'
+}
+
 export function isR2Configured(): boolean {
+  // If STORAGE_PROVIDER is explicitly set to supabase, force Supabase storage
+  if (process.env.STORAGE_PROVIDER?.toLowerCase() === 'supabase') {
+    return false
+  }
+
   return Boolean(
     process.env.CLOUDFLARE_R2_ACCOUNT_ID &&
     process.env.CLOUDFLARE_R2_ACCESS_KEY_ID &&
@@ -91,7 +109,7 @@ export async function uploadFile({
     }
   }
 
-  // Fallback to Supabase Storage if R2 is not configured
+  // Supabase Storage Provider / Fallback
   try {
     const supabase = await createSupabaseServerClient()
     const { error: uploadError } = await supabase.storage
@@ -140,7 +158,7 @@ export async function deleteFile({ bucket, key }: DeleteOptions): Promise<Delete
     }
   }
 
-  // Fallback to Supabase Storage if R2 is not configured
+  // Supabase Storage Provider / Fallback
   try {
     const supabase = await createSupabaseServerClient()
     const { error } = await supabase.storage
@@ -169,7 +187,7 @@ export async function listFolder({ bucket, prefix }: ListFolderOptions): Promise
     try {
       const client = getR2Client()
       const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME!
-      const fullPrefix = `${bucket}/${prefix}`.replace(/\/+/g, '/')
+      const fullPrefix = prefix ? `${bucket}/${prefix}`.replace(/\/+/g, '/') : bucket
 
       const response = await client.send(
         new ListObjectsV2Command({
@@ -188,15 +206,30 @@ export async function listFolder({ bucket, prefix }: ListFolderOptions): Promise
     }
   }
 
-  // Fallback to Supabase Storage
+  // Supabase Storage Provider / Fallback
   try {
     const supabase = await createSupabaseServerClient()
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .list(prefix)
 
-    if (error) return { files: [], error: error.message }
-    const files = (data || []).map((f) => `${prefix}/${f.name}`.replace(/\/+/g, '/'))
+    async function listRecursive(dir: string): Promise<string[]> {
+      const { data, error } = await supabase.storage.from(bucket).list(dir)
+      if (error) throw error
+      if (!data || data.length === 0) return []
+
+      let collected: string[] = []
+      for (const item of data) {
+        const itemPath = dir ? `${dir}/${item.name}` : item.name
+        // In Supabase storage, folders have id === null
+        if (item.id === null) {
+          const nested = await listRecursive(itemPath)
+          collected = collected.concat(nested)
+        } else {
+          collected.push(itemPath)
+        }
+      }
+      return collected
+    }
+
+    const files = await listRecursive(prefix)
     return { files }
   } catch (err: any) {
     return { files: [], error: err.message || 'Failed to list storage folder' }

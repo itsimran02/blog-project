@@ -47,9 +47,12 @@ To serve uploaded files publicly on your website:
 
 ## Step 4: Configure Environment Variables
 
-Add the following keys to your `.env.local` (and your Vercel / hosting environment settings):
+To activate Cloudflare R2, set `STORAGE_PROVIDER=cloudflare` and add your R2 keys to your `.env.local` (and your Vercel / hosting environment settings):
 
 ```env
+# Storage Provider: 'cloudflare' or 'supabase'
+STORAGE_PROVIDER=cloudflare
+
 # Cloudflare R2 Configuration
 CLOUDFLARE_R2_ACCOUNT_ID="your_account_id_here"
 CLOUDFLARE_R2_ACCESS_KEY_ID="your_access_key_id_here"
@@ -62,6 +65,12 @@ NEXT_PUBLIC_CLOUDFLARE_R2_PUBLIC_URL="https://pub-xxxxxxxx.r2.dev"
 
 ---
 
-## Fallback Behavior
+## Switching Between Supabase Storage and Cloudflare R2
 
-If the Cloudflare R2 environment variables above are **not** provided (e.g. during local testing), the application will automatically fall back to **Supabase Storage** without crashing or breaking file uploads.
+The CMS supports dual-storage out of the box:
+
+- **Use Supabase Storage (Current Default)**:
+  Set `STORAGE_PROVIDER=supabase` (or keep Cloudflare R2 variables commented out in `.env.local`). All uploads, media, and avatars will seamlessly use your Supabase Storage buckets (`media`, `avatars`, `ai-books`).
+- **Use Cloudflare R2**:
+  Set `STORAGE_PROVIDER=cloudflare` and uncomment your Cloudflare R2 credentials. Uploads and media listing will instantly switch to Cloudflare R2 with zero egress bandwidth costs.
+

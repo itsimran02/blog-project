@@ -31,6 +31,7 @@ vi.mock('@/lib/supabase/server', () => ({
 
 import {
   isR2Configured,
+  getStorageProvider,
   getR2PublicUrl,
   uploadFile,
   deleteFile,
@@ -42,6 +43,7 @@ describe('Storage Abstraction Layer', () => {
   const SAVED_ENV = { ...process.env }
 
   function restoreEnv() {
+    process.env.STORAGE_PROVIDER = SAVED_ENV.STORAGE_PROVIDER
     process.env.CLOUDFLARE_R2_ACCOUNT_ID = SAVED_ENV.CLOUDFLARE_R2_ACCOUNT_ID
     process.env.CLOUDFLARE_R2_ACCESS_KEY_ID = SAVED_ENV.CLOUDFLARE_R2_ACCESS_KEY_ID
     process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY = SAVED_ENV.CLOUDFLARE_R2_SECRET_ACCESS_KEY
@@ -50,6 +52,7 @@ describe('Storage Abstraction Layer', () => {
   }
 
   function clearR2Env() {
+    delete process.env.STORAGE_PROVIDER
     delete process.env.CLOUDFLARE_R2_ACCOUNT_ID
     delete process.env.CLOUDFLARE_R2_ACCESS_KEY_ID
     delete process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY
@@ -58,6 +61,7 @@ describe('Storage Abstraction Layer', () => {
   }
 
   function setR2Env() {
+    delete process.env.STORAGE_PROVIDER
     process.env.CLOUDFLARE_R2_ACCOUNT_ID = 'test-account'
     process.env.CLOUDFLARE_R2_ACCESS_KEY_ID = 'test-key'
     process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY = 'test-secret'
@@ -76,15 +80,24 @@ describe('Storage Abstraction Layer', () => {
     resetStorageClient()
   })
 
-  describe('isR2Configured', () => {
-    it('returns false when R2 env variables are missing', () => {
+  describe('isR2Configured and getStorageProvider', () => {
+    it('returns false and supabase when R2 env variables are missing', () => {
       clearR2Env()
       expect(isR2Configured()).toBe(false)
+      expect(getStorageProvider()).toBe('supabase')
     })
 
-    it('returns true when all R2 env variables are present', () => {
+    it('returns true and cloudflare when all R2 env variables are present', () => {
       setR2Env()
       expect(isR2Configured()).toBe(true)
+      expect(getStorageProvider()).toBe('cloudflare')
+    })
+
+    it('forces supabase when STORAGE_PROVIDER=supabase even if R2 env vars are present', () => {
+      setR2Env()
+      process.env.STORAGE_PROVIDER = 'supabase'
+      expect(isR2Configured()).toBe(false)
+      expect(getStorageProvider()).toBe('supabase')
     })
   })
 
@@ -158,13 +171,14 @@ describe('Storage Abstraction Layer', () => {
     })
   })
 
-  describe('Supabase Storage Fallback Mode', () => {
+  describe('Supabase Storage Provider Mode', () => {
     beforeEach(() => {
       clearR2Env()
+      process.env.STORAGE_PROVIDER = 'supabase'
       resetStorageClient()
     })
 
-    it('uploads file via Supabase storage fallback', async () => {
+    it('uploads file via Supabase storage', async () => {
       mockSupabaseStorage.upload.mockResolvedValueOnce({ error: null })
       mockSupabaseStorage.getPublicUrl.mockReturnValueOnce({
         data: { publicUrl: 'https://supabase.co/storage/v1/object/public/avatars/user-1/avatar.jpg' },
@@ -185,7 +199,7 @@ describe('Storage Abstraction Layer', () => {
       expect(result.publicUrl).toContain('https://supabase.co/storage/v1/object/public/avatars/user-1/avatar.jpg?v=')
     })
 
-    it('deletes file via Supabase storage fallback', async () => {
+    it('deletes file via Supabase storage', async () => {
       mockSupabaseStorage.remove.mockResolvedValueOnce({ error: null })
 
       const result = await deleteFile({
@@ -195,6 +209,36 @@ describe('Storage Abstraction Layer', () => {
 
       expect(mockSupabaseStorage.remove).toHaveBeenCalledWith(['user-1/avatar.jpg'])
       expect(result.success).toBe(true)
+    })
+
+    it('lists files via Supabase storage recursively', async () => {
+      mockSupabaseStorage.list.mockImplementation(async (dir: string) => {
+        if (dir === '') {
+          return {
+            data: [
+              { name: '2026', id: null }, // folder
+            ],
+            error: null,
+          }
+        }
+        if (dir === '2026') {
+          return {
+            data: [
+              { name: 'image1.jpg', id: 'uuid-1' },
+              { name: 'image2.png', id: 'uuid-2' },
+            ],
+            error: null,
+          }
+        }
+        return { data: [], error: null }
+      })
+
+      const result = await listFolder({
+        bucket: 'media',
+        prefix: '',
+      })
+
+      expect(result.files).toEqual(['2026/image1.jpg', '2026/image2.png'])
     })
   })
 })

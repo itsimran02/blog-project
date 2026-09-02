@@ -82,7 +82,7 @@ export function MediaLibraryModal({
 
       const json = await res.json()
       if (json.success && json.data) {
-        toast.success(`Uploaded ${file.name} to Cloudflare R2!`)
+        toast.success(`Uploaded ${file.name} successfully!`)
         const newItem: MediaItem = {
           key: json.data.key,
           filename: json.data.filename,
@@ -203,7 +203,7 @@ export function MediaLibraryModal({
               {uploading ? (
                 <div className="flex flex-col items-center gap-3">
                   <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                  <p className="text-sm font-semibold text-foreground">Uploading to Cloudflare R2...</p>
+                  <p className="text-sm font-semibold text-foreground">Uploading image...</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center text-center space-y-4 max-w-sm">
