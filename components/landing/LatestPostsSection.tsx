@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { format } from 'date-fns'
 import { ArrowRight, BookOpen, Calendar, User } from 'lucide-react'
 import { getPublishedPosts } from '@/features/posts/queries'
@@ -50,15 +49,15 @@ export async function LatestPostsSection() {
   const displayPosts = posts.length > 0 ? posts : fallbackPosts
 
   return (
-    <section className="py-20 bg-background border-t border-border">
+    <section className="border-y border-[#1d4ed8]/15 bg-[#f8fbff] py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-widest text-primary flex items-center justify-center gap-1.5 mb-2">
+          <span className="text-xs font-black uppercase tracking-[0.2em] text-[#1d4ed8] flex items-center justify-center gap-1.5 mb-2">
             <BookOpen className="w-4 h-4" /> Latest Articles & Insights
           </span>
-          <h2 className="text-3xl font-extrabold text-foreground tracking-tight">From Our Research Journal</h2>
-          <div className="w-16 h-1 bg-primary mx-auto mt-4 rounded-full mb-4"></div>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
+          <h2 className="text-3xl font-black text-[#07163d] tracking-tight">From Our Research Journal</h2>
+          <div className="w-16 h-1 bg-[#38bdf8] mx-auto mt-4 mb-4"></div>
+          <p className="text-[#475569] max-w-2xl mx-auto text-lg leading-relaxed">
             Explore the newest guides, scholarship strategies, and academic career advice written by our mentors.
           </p>
         </div>
@@ -73,10 +72,10 @@ export async function LatestPostsSection() {
             return (
               <article
                 key={post.id}
-                className="bg-card rounded-2xl border border-border/80 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
+                className="bg-white border border-[#1d4ed8]/15 shadow-[6px_6px_0_rgba(37,99,235,0.10)] hover:shadow-[9px_9px_0_rgba(37,99,235,0.18)] transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
               >
                 {post.cover_image && (
-                  <div className="relative h-48 w-full overflow-hidden bg-muted">
+                  <div className="relative h-48 w-full overflow-hidden bg-[#dbeafe]">
                     <img
                       src={post.cover_image}
                       alt={post.title}
@@ -87,25 +86,25 @@ export async function LatestPostsSection() {
                 <div className="p-6 flex flex-col flex-1 justify-between space-y-4">
                   <div className="space-y-3">
                     {post.category && (
-                      <span className="inline-block px-3 py-1 bg-muted text-primary text-xs font-bold rounded-full border border-border/60">
+                      <span className="inline-block px-3 py-1 bg-[#eff6ff] text-[#1d4ed8] text-xs font-black border border-[#93c5fd]/70">
                         {post.category.name}
                       </span>
                     )}
-                    <Link href={`/blog/${post.slug}`} className="block group-hover:text-primary transition-colors">
-                      <h3 className="text-xl font-bold text-foreground leading-snug line-clamp-2">
+                    <Link href={`/blog/${post.slug}`} className="block group-hover:text-[#1d4ed8] transition-colors">
+                      <h3 className="text-xl font-black text-[#07163d] leading-snug line-clamp-2">
                         {post.title}
                       </h3>
                     </Link>
                     {post.excerpt && (
-                      <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed">
+                      <p className="text-[#475569] text-sm line-clamp-3 leading-relaxed">
                         {post.excerpt}
                       </p>
                     )}
                   </div>
 
-                  <div className="pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground font-medium">
+                  <div className="pt-4 border-t border-[#1d4ed8]/10 flex items-center justify-between text-xs text-[#64748b] font-medium">
                     <span className="flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-primary" /> {authorName}
+                      <User className="w-3.5 h-3.5 text-[#1d4ed8]" /> {authorName}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Calendar className="w-3.5 h-3.5" /> {dateStr}
@@ -120,7 +119,7 @@ export async function LatestPostsSection() {
         <div className="text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:opacity-90 transition-all text-sm"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#1d4ed8] text-white font-black shadow-[6px_6px_0_#93c5fd] hover:bg-[#07163d] transition-all text-sm"
           >
             View All Articles <ArrowRight className="w-4 h-4" />
           </Link>

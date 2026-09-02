@@ -1,14 +1,17 @@
+import * as React from 'react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { can } from '@/lib/permissions'
 import type { Permission, Role } from '@/lib/permissions'
 import type { Profile } from '@/lib/supabase/types'
 
+const cacheFn = typeof React.cache === 'function' ? React.cache : (fn: any) => fn
+
 /**
  * Returns the current user's full profile, or null if not authenticated.
- * Use this in server actions where you need to check auth without redirecting.
+ * Wrapped with React cache() when available to deduplicate requests within the same server render.
  */
-export async function getProfile(): Promise<Profile | null> {
+export const getProfile = cacheFn(async function getProfile(): Promise<Profile | null> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
@@ -20,7 +23,7 @@ export async function getProfile(): Promise<Profile | null> {
     .single()
 
   return profile
-}
+})
 
 /**
  * Returns the current user's profile or redirects to /login.

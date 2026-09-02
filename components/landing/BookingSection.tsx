@@ -1,77 +1,71 @@
 'use client'
 
-import { User, Users, GraduationCap, ArrowRight } from 'lucide-react'
+import { ArrowRight, Building2, GraduationCap, UserRoundCheck } from 'lucide-react'
+
+const pathways = [
+  {
+    title: 'Student Guidance',
+    audience: 'For individual students',
+    text: 'Profile review, exam setbacks, research direction, SOP clarity, and step-by-step planning for Masters, PhD, internships, and fellowships.',
+    subject: 'Student guidance request',
+    icon: UserRoundCheck,
+  },
+  {
+    title: 'Career Camp Sessions',
+    audience: 'For colleges and local communities',
+    text: 'High-signal talks inspired by Gaav Te Global: research careers, global pathways, application roadmaps, and opportunity literacy.',
+    subject: 'Career camp or college session',
+    icon: GraduationCap,
+  },
+  {
+    title: 'Institutional Outreach',
+    audience: 'For universities and education partners',
+    text: 'Custom seminars, bilingual student resources, career brochures, and long-term partnership formats for rural and semi-urban learners.',
+    subject: 'Institutional outreach partnership',
+    icon: Building2,
+  },
+]
 
 export function BookingSection() {
   return (
-    <section id="booking" className="py-24 bg-background border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="text-xs font-bold uppercase tracking-widest text-primary">Premium Mentorship</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-foreground mt-2 mb-4 tracking-tight">Book a Personalized Session</h2>
-          <div className="w-16 h-1 bg-primary mx-auto rounded-full mb-6"></div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Accelerate your journey with our paid consultation sessions. Tailored to provide maximum impact, whether you are an individual aiming for a top university, or an institution seeking expert seminars.
+    <section id="booking" className="border-t border-[#1d4ed8]/15 bg-white py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1d4ed8]">Mentorship Pathways</p>
+            <h2 className="mt-4 text-4xl font-black tracking-tight text-[#07163d] sm:text-5xl">
+              Bring verified career guidance to the exact room that needs it.
+            </h2>
+          </div>
+          <p className="text-lg leading-8 text-[#475569]">
+            From one student trying to choose the next exam to a college planning a full research-career session,
+            Versatile Scientist turns experience into practical direction.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Individual Session */}
-          <div className="bg-card rounded-3xl p-8 border border-border shadow-xs hover:shadow-lg transition-all group flex flex-col h-full hover:-translate-y-1">
-            <div className="w-16 h-16 bg-muted text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
-              <User className="w-8 h-8" />
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">1-on-1 Guidance</h3>
-            <p className="text-primary font-semibold text-sm mb-4">For Individual Students • $49/hr</p>
-            <p className="text-muted-foreground mb-8 flex-grow">
-              Personalized profile evaluation, SOP drafting, interview prep, and direct fellowship application strategy tailored exactly to your academic goals.
-            </p>
-            <a
-              href="mailto:contact@versatilescientist.org?subject=Book 1-on-1 Guidance Session"
-              className="w-full py-4 bg-muted text-foreground border border-border rounded-xl font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex items-center justify-center gap-2"
-            >
-              Book Session <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Private Coaching */}
-          <div className="bg-card rounded-3xl p-8 border-2 border-primary/50 shadow-md transition-all group flex flex-col h-full hover:-translate-y-1 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wide">
-              Most Popular
-            </div>
-            <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
-              <Users className="w-8 h-8" />
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">Group Workshops</h3>
-            <p className="text-primary font-semibold text-sm mb-4">For Private Coaching Classes • $199/session</p>
-            <p className="text-muted-foreground mb-8 flex-grow">
-              Host specialized, interactive group workshops for your coaching center. We cover competitive exam roadmaps, research methodologies, and global opportunity mapping.
-            </p>
-            <a
-              href="mailto:contact@versatilescientist.org?subject=Book Group Workshop"
-              className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2"
-            >
-              Book Workshop <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Universities */}
-          <div className="bg-card rounded-3xl p-8 border border-border shadow-xs hover:shadow-lg transition-all group flex flex-col h-full hover:-translate-y-1">
-            <div className="w-16 h-16 bg-muted text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
-              <GraduationCap className="w-8 h-8" />
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">Institutional Seminars</h3>
-            <p className="text-primary font-semibold text-sm mb-4">For Private Colleges & Universities • $499/day</p>
-            <p className="text-muted-foreground mb-8 flex-grow">
-              Bring industry-leading researchers to your campus (virtual or on-site). Designed to boost student placements in top global PhD and Master&apos;s programs.
-            </p>
-            <a
-              href="mailto:contact@versatilescientist.org?subject=Book Institutional Seminar"
-              className="w-full py-4 bg-muted text-foreground border border-border rounded-xl font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all flex items-center justify-center gap-2"
-            >
-              Book Seminar <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {pathways.map((pathway) => {
+            const Icon = pathway.icon
+            return (
+              <article
+                key={pathway.title}
+                className="flex min-h-[360px] flex-col border border-[#1d4ed8]/15 bg-[#eff6ff] p-6 shadow-[6px_6px_0_rgba(37,99,235,0.10)] transition hover:-translate-y-1 hover:shadow-[9px_9px_0_rgba(29,78,216,0.22)]"
+              >
+                <div className="mb-7 flex h-14 w-14 items-center justify-center border border-[#93c5fd] bg-white">
+                  <Icon className="h-7 w-7 text-[#1d4ed8]" />
+                </div>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#0369a1]">{pathway.audience}</p>
+                <h3 className="mt-3 text-2xl font-black text-[#07163d]">{pathway.title}</h3>
+                <p className="mt-4 flex-1 text-base leading-7 text-[#475569]">{pathway.text}</p>
+                <a
+                  href={`mailto:contact@versatilescientist.org?subject=${encodeURIComponent(pathway.subject)}`}
+                  className="mt-8 inline-flex items-center justify-center gap-2 border border-[#1d4ed8] bg-[#1d4ed8] px-5 py-4 text-sm font-black uppercase tracking-wide text-white shadow-[5px_5px_0_#93c5fd] transition hover:bg-[#07163d]"
+                >
+                  Start the conversation <ArrowRight className="h-4 w-4" />
+                </a>
+              </article>
+            )
+          })}
         </div>
       </div>
     </section>

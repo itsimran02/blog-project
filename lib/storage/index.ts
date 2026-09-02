@@ -210,7 +210,7 @@ export async function listFolder({ bucket, prefix }: ListFolderOptions): Promise
   try {
     const supabase = await createSupabaseServerClient()
 
-    async function listRecursive(dir: string): Promise<string[]> {
+    const listRecursive = async (dir: string): Promise<string[]> => {
       const { data, error } = await supabase.storage.from(bucket).list(dir)
       if (error) throw error
       if (!data || data.length === 0) return []
