@@ -107,7 +107,7 @@ export function SubscribeForm({ variant = 'card' }: SubscribeFormProps) {
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-7xl">
         <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
-          <div className="flex min-h-20 overflow-hidden bg-white text-[#07163d]">
+          <div className="flex min-h-20 overflow-hidden border border-white/20 bg-white text-[#07163d] shadow-[0_18px_45px_rgba(0,0,0,0.16)]">
             <label htmlFor={inputId} className="flex w-20 shrink-0 items-center justify-center border-r border-[#dbe3ef] bg-[#eef2f7]">
               <span className="sr-only">Email address</span>
               <Mail className="h-7 w-7 text-black" />
@@ -124,7 +124,7 @@ export function SubscribeForm({ variant = 'card' }: SubscribeFormProps) {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="h-20 rounded-md bg-[#4656d9] px-8 text-lg font-semibold text-white hover:bg-[#1d4ed8]"
+            className="h-20 rounded-none bg-[#1d4ed8] px-8 text-lg font-black text-white shadow-[0_18px_45px_rgba(0,0,0,0.18)] hover:bg-[#38bdf8] hover:text-[#07163d]"
           >
             <Check className="mr-4 h-7 w-7" />
             {isSubmitting ? 'Subscribing...' : 'Subscribe'}

@@ -12,8 +12,6 @@ import { NavAuthButton } from '@/components/NavAuthButton'
 import { HeaderSearch } from '@/components/HeaderSearch'
 import { SubscribeForm } from '@/components/newsletter/SubscribeForm'
 
-const footerImage = 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1800'
-
 const quickLinks = [
   { label: 'Home', href: '/' },
   { label: 'About Us', href: '/#about' },
@@ -37,7 +35,7 @@ const socialLinks = [
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground antialiased font-sans">
-      <header className="border-b border-[#1d4ed8]/15 sticky top-0 z-50 bg-white/92 backdrop-blur-md shadow-xs">
+      <header className="sticky top-0 z-50 border-b border-[#1d4ed8]/10 bg-white/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto py-3.5 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           {/* Logo & Title */}
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
@@ -84,12 +82,11 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <main className="flex-1">{children}</main>
 
       <footer className="border-t border-[#1d4ed8]/15 bg-white">
-        <section className="relative isolate overflow-hidden bg-black py-16 text-white">
-          <img src={footerImage} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover opacity-30" />
-          <div className="absolute inset-0 -z-10 bg-black/78" />
-          <div className="absolute inset-0 -z-10 opacity-10 [background-image:linear-gradient(#93c5fd_1px,transparent_1px),linear-gradient(90deg,#93c5fd_1px,transparent_1px)] [background-size:48px_48px]" />
+        <section className="relative isolate overflow-hidden bg-[#07163d] py-16 text-white">
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,#07163d_0%,#0b2c67_100%)]" />
           <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-black tracking-tight sm:text-5xl">Newsletter Signup</h2>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#7dd3fc]">Stay in the loop</p>
+            <h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Newsletter Signup</h2>
             <div className="mt-8">
               <SubscribeForm variant="footer" />
             </div>
@@ -140,8 +137,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                       target={social.href.startsWith('http') ? '_blank' : undefined}
                       rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                       aria-label={social.label}
-                      className="flex h-14 w-14 items-center justify-center rounded-xl border border-[#dbe3ef] bg-[#f8fbff] text-[#475569] transition hover:border-[#93c5fd] hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
-                    >
+                    className="flex h-12 w-12 items-center justify-center border border-[#dbe3ef] bg-[#f8fbff] text-[#475569] transition hover:border-[#93c5fd] hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
+                  >
                       <Icon className="h-6 w-6" />
                     </a>
                   )
