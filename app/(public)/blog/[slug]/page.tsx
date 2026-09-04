@@ -113,7 +113,7 @@ export default async function PostPage({ params }: PostPageProps) {
       url: baseUrl,
       logo: {
         '@type': 'ImageObject',
-        url: `${baseUrl}/favicon-96x96.png`,
+        url: `${baseUrl}/logo.jpg`,
       },
     },
     keywords: post.tags?.map((t) => t.name).join(', ') || undefined,

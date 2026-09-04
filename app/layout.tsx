@@ -2,7 +2,34 @@ import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import NextTopLoader from "nextjs-toploader";
+import fs from "fs";
+import path from "path";
 import "./globals.css";
+
+// Generate standalone self-contained favicon.svg with inline base64 image
+try {
+  const publicDir = path.join(process.cwd(), "public");
+  const logoPath = path.join(publicDir, "logo.jpg");
+  if (fs.existsSync(logoPath)) {
+    const logoBuffer = fs.readFileSync(logoPath);
+    const base64Data = `data:image/jpeg;base64,${logoBuffer.toString("base64")}`;
+    
+    // Self-contained SVG with embedded base64 data URL (works in all browsers without network restrictions)
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" rx="100" fill="#07163d"/>
+  <g transform="translate(16, 16)">
+    <clipPath id="logo-clip">
+      <rect width="480" height="480" rx="84" fill="#ffffff"/>
+    </clipPath>
+    <rect width="480" height="480" rx="84" fill="#ffffff"/>
+    <image href="${base64Data}" width="480" height="480" preserveAspectRatio="xMidYMid meet" clip-path="url(#logo-clip)"/>
+  </g>
+</svg>`;
+    fs.writeFileSync(path.join(publicDir, "favicon.svg"), svgContent);
+  }
+} catch {
+  // Silent fallback
+}
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -16,7 +43,7 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://versatilescientist.org'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://versatilescientist.org';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -51,13 +78,7 @@ export const metadata: Metadata = {
     title: "Versatile Scientist",
     description: "Empowering students, scholars, and researchers worldwide.",
   },
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
-    ],
-    apple: "/apple-touch-icon.png",
-  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

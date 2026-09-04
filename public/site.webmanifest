@@ -1,18 +1,12 @@
 {
-  "name": "FrankMendezBlog",
-  "short_name": "FrankMendezBlog",
+  "name": "Versatile Scientist",
+  "short_name": "VersatileScientist",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/logo.jpg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ],
   "theme_color": "#ffffff",
