@@ -14,12 +14,12 @@ import { SubscribeForm } from '@/components/newsletter/SubscribeForm'
 
 const quickLinks = [
   { label: 'Home', href: '/' },
+  { label: 'Jobs', href: '/blog/category/jobs' },
+  { label: 'Internships', href: '/blog/category/internships' },
+  { label: 'Workshops', href: '/blog/category/workshops' },
+  { label: 'Scholarships', href: '/blog/category/scholarships' },
+  { label: 'All Articles', href: '/blog' },
   { label: 'About Us', href: '/#about' },
-  { label: 'Workshops', href: '/#booking' },
-  { label: 'Contact', href: 'mailto:contact@versatilescientist.org' },
-  { label: 'Jobs', href: '/blog' },
-  { label: 'Internships', href: '/blog' },
-  { label: 'Scholarships', href: '/blog' },
   { label: 'Privacy Policy', href: '/privacy-policy' },
 ]
 
@@ -54,20 +54,20 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-bold text-[#475569]">
-            <Link href="/" className="hover:text-[#1d4ed8] transition-colors">
-              Home
+            <Link href="/blog/category/jobs" className="hover:text-[#1d4ed8] transition-colors">
+              Jobs
             </Link>
-            <Link href="/blog" className="hover:text-[#1d4ed8] transition-colors flex items-center gap-1">
+            <Link href="/blog/category/internships" className="hover:text-[#1d4ed8] transition-colors">
+              Internships
+            </Link>
+            <Link href="/blog/category/workshops" className="hover:text-[#1d4ed8] transition-colors">
+              Workshops
+            </Link>
+            <Link href="/blog/category/scholarships" className="hover:text-[#1d4ed8] transition-colors">
+              Scholarships
+            </Link>
+            <Link href="/blog" className="hover:text-[#1d4ed8] transition-colors">
               Articles
-            </Link>
-            <Link href="/#opportunities" className="hover:text-[#1d4ed8] transition-colors">
-              Opportunities
-            </Link>
-            <Link href="/#booking" className="hover:text-[#1d4ed8] transition-colors">
-              Mentorship
-            </Link>
-            <Link href="/#about" className="hover:text-[#1d4ed8] transition-colors">
-              About
             </Link>
           </nav>
 

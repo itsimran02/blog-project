@@ -6,15 +6,23 @@ import fs from "fs";
 import path from "path";
 import "./globals.css";
 
-// Generate standalone self-contained favicon.svg with inline base64 image
+// Sync logo with favicon files and eliminate default Vercel favicon
 try {
   const publicDir = path.join(process.cwd(), "public");
+  const appDir = path.join(process.cwd(), "app");
   const logoPath = path.join(publicDir, "logo.jpg");
+  
   if (fs.existsSync(logoPath)) {
     const logoBuffer = fs.readFileSync(logoPath);
-    const base64Data = `data:image/jpeg;base64,${logoBuffer.toString("base64")}`;
     
-    // Self-contained SVG with embedded base64 data URL (works in all browsers without network restrictions)
+    // Overwrite the app/favicon.ico and public/favicon.ico with the real logo
+    fs.writeFileSync(path.join(appDir, "favicon.ico"), logoBuffer);
+    fs.writeFileSync(path.join(publicDir, "favicon.ico"), logoBuffer);
+    fs.writeFileSync(path.join(publicDir, "favicon-96x96.png"), logoBuffer);
+    fs.writeFileSync(path.join(publicDir, "apple-touch-icon.png"), logoBuffer);
+
+    // Build self-contained vector SVG with embedded logo
+    const base64Data = `data:image/jpeg;base64,${logoBuffer.toString("base64")}`;
     const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <rect width="512" height="512" rx="100" fill="#07163d"/>
   <g transform="translate(16, 16)">
@@ -78,6 +86,14 @@ export const metadata: Metadata = {
     title: "Versatile Scientist",
     description: "Empowering students, scholars, and researchers worldwide.",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/logo.jpg" },
+    ],
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
   manifest: "/site.webmanifest",
 };
 
@@ -88,6 +104,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/logo.jpg" />
+        <link rel="apple-touch-icon" href="/logo.jpg" />
+      </head>
       <body
         className={`${dmSans.className} ${playfair.variable} ${dmSans.variable}`}
       >
