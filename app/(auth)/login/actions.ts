@@ -21,12 +21,24 @@ export async function login(formData: FormData) {
     password: formData.get('password') as string,
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { data: authData, error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
     return { error: error.message }
   }
 
+  let role = 'user'
+  if (authData?.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', authData.user.id)
+      .maybeSingle()
+    if (profile?.role) {
+      role = profile.role
+    }
+  }
+
   revalidatePath('/', 'layout')
-  return { success: true }
+  return { success: true, role }
 }

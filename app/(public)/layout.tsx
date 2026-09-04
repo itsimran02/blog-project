@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { NavAuthButton } from '@/components/NavAuthButton'
 import { HeaderSearch } from '@/components/HeaderSearch'
+import { MobileNav } from '@/components/MobileNav'
 import { SubscribeForm } from '@/components/newsletter/SubscribeForm'
 
 const quickLinks = [
@@ -71,10 +72,11 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </Link>
           </nav>
 
-          {/* Actions: Search & Auth */}
-          <div className="flex items-center gap-3">
+          {/* Actions: Search, Auth & Mobile Menu */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <HeaderSearch />
             <NavAuthButton />
+            <MobileNav />
           </div>
         </div>
       </header>
