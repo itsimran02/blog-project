@@ -55,19 +55,19 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-bold text-[#475569]">
-            <Link href="/blog/category/jobs" className="hover:text-[#1d4ed8] transition-colors">
+            <Link href="/blog/category/jobs" prefetch={true} className="hover:text-[#1d4ed8] transition-colors">
               Jobs
             </Link>
-            <Link href="/blog/category/internships" className="hover:text-[#1d4ed8] transition-colors">
+            <Link href="/blog/category/internships" prefetch={true} className="hover:text-[#1d4ed8] transition-colors">
               Internships
             </Link>
-            <Link href="/blog/category/workshops" className="hover:text-[#1d4ed8] transition-colors">
+            <Link href="/blog/category/workshops" prefetch={true} className="hover:text-[#1d4ed8] transition-colors">
               Workshops
             </Link>
-            <Link href="/blog/category/scholarships" className="hover:text-[#1d4ed8] transition-colors">
+            <Link href="/blog/category/scholarships" prefetch={true} className="hover:text-[#1d4ed8] transition-colors">
               Scholarships
             </Link>
-            <Link href="/blog" className="hover:text-[#1d4ed8] transition-colors">
+            <Link href="/blog" prefetch={true} className="hover:text-[#1d4ed8] transition-colors">
               Articles
             </Link>
           </nav>

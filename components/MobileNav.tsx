@@ -143,6 +143,7 @@ export function MobileNav() {
                 <Link
                   key={item.label}
                   href={item.href}
+                  prefetch={true}
                   onClick={() => setOpen(false)}
                   className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-bold transition-all ${
                     isActive
