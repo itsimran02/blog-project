@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, ChevronLeft, ChevronRight, BookOpen, Flame, Rocket, Sparkles } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, BookOpen, Flame, Rocket, Sparkles, Briefcase, GraduationCap } from 'lucide-react'
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -15,10 +15,10 @@ export function HeroSlider() {
       title: 'Empowering Students & Young Researchers',
       description: 'Discover scholarships, remote internships, and expert career guidance tailored for your academic success.',
       image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1600&q=80',
-      primaryCTA: 'Explore Opportunities',
-      secondaryCTA: 'Browse Articles',
-      primaryLink: '/#opportunities',
-      secondaryLink: '/blog',
+      primaryCTA: 'Explore Jobs',
+      secondaryCTA: 'Internships',
+      primaryLink: '/blog',
+      secondaryLink: '/blog/category/internships',
     },
     {
       id: 2,
@@ -27,10 +27,10 @@ export function HeroSlider() {
       title: 'How to Ace the Global STEM Scholarship 2026',
       description: 'Read our comprehensive new blog post detailing step-by-step strategies, proposal templates, and interview tips.',
       image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1600&q=80',
-      primaryCTA: 'Read Articles',
-      secondaryCTA: 'View Opportunities',
+      primaryCTA: 'Explore Jobs',
+      secondaryCTA: 'Internships',
       primaryLink: '/blog',
-      secondaryLink: '/#opportunities',
+      secondaryLink: '/blog/category/internships',
     },
     {
       id: 3,
@@ -39,10 +39,10 @@ export function HeroSlider() {
       title: 'The Future of AI in Healthcare Research',
       description: 'Our latest published study explores emerging career paths and essential skills needed for the next decade of medical innovation.',
       image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1600&q=80',
-      primaryCTA: 'Read Articles',
-      secondaryCTA: 'Find Mentors',
+      primaryCTA: 'Explore Jobs',
+      secondaryCTA: 'Internships',
       primaryLink: '/blog',
-      secondaryLink: '/#mentors',
+      secondaryLink: '/blog/category/internships',
     },
     {
       id: 4,
@@ -51,10 +51,10 @@ export function HeroSlider() {
       title: 'Summer Research Internships at Top Labs',
       description: 'Applications are now open for remote and on-site internships at leading global research institutions. Don\'t miss out!',
       image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1600&q=80',
-      primaryCTA: 'View Opportunities',
-      secondaryCTA: 'Read Articles',
-      primaryLink: '/#opportunities',
-      secondaryLink: '/blog',
+      primaryCTA: 'Explore Jobs',
+      secondaryCTA: 'Internships',
+      primaryLink: '/blog',
+      secondaryLink: '/blog/category/internships',
     },
   ]
 
@@ -103,12 +103,14 @@ export function HeroSlider() {
                       href={slide.primaryLink}
                       className="w-full sm:w-auto px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2"
                     >
+                      <Briefcase className="w-4 h-4" />
                       {slide.primaryCTA} <ArrowRight className="w-4 h-4" />
                     </Link>
                     <Link
                       href={slide.secondaryLink}
-                      className="w-full sm:w-auto px-8 py-3.5 bg-background/80 text-foreground border border-border backdrop-blur-md rounded-xl font-semibold hover:bg-accent transition-all text-center"
+                      className="w-full sm:w-auto px-8 py-3.5 bg-background/80 text-foreground border border-border backdrop-blur-md rounded-xl font-semibold hover:bg-accent hover:text-primary transition-all flex items-center justify-center gap-2 text-center"
                     >
+                      <GraduationCap className="w-4 h-4" />
                       {slide.secondaryCTA}
                     </Link>
                   </div>

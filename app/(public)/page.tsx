@@ -3,6 +3,7 @@ import {
   ArrowRight,
   BookOpen,
   Brain,
+  Briefcase,
   CheckCircle2,
   GraduationCap,
   Landmark,
@@ -115,13 +116,15 @@ export default function HomePage() {
                 href="/blog"
                 className="inline-flex items-center justify-center gap-2 bg-[#1d4ed8] px-6 py-4 text-sm font-black uppercase tracking-wide text-white shadow-[0_16px_30px_rgba(29,78,216,0.24)] transition hover:-translate-y-0.5 hover:bg-[#0b1f4d]"
               >
-                Explore Guidance <ArrowRight className="h-4 w-4" />
+                <Briefcase className="h-4 w-4" />
+                Explore Jobs <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/#about"
+                href="/blog/category/internships"
                 className="inline-flex items-center justify-center gap-2 border border-[#1d4ed8]/30 bg-white px-6 py-4 text-sm font-black uppercase tracking-wide text-[#0b1f4d] transition hover:border-[#1d4ed8] hover:bg-[#dbeafe]"
               >
-                The Man Behind <Route className="h-4 w-4" />
+                <GraduationCap className="h-4 w-4 text-[#1d4ed8]" />
+                Internships
               </Link>
             </div>
           </div>
